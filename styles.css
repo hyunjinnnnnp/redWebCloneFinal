@@ -8,14 +8,20 @@ body {
   height: 100vh;
 }
 main {
+  position: relative;
   width: 100%;
   height: 100%;
+
+  background-color: rgb(139, 34, 34);
 }
 canvas {
+  position: absolute;
+  top: 0;
+  left: 0;
   width: 100%;
   height: 100%;
-  background-color: gray;
-  background-color: rgb(139, 34, 34);
+  background-color: transparent;
+  z-index: 1;
 }
 
 .text-container {
@@ -25,7 +31,7 @@ canvas {
   width: 100%;
   height: 100%;
   border: 5px solid black;
-  position: absolute;
+
   font-size: 5em;
   font-weight: bold;
   color: black;
@@ -78,4 +84,84 @@ canvas {
 }
 .fade-out {
   animation: fade 9.7s 0.7 forwards, textMove 18s linear forwards;
+}
+.intro-btn-container {
+  position: absolute;
+  bottom: 50px;
+  right: 50px;
+  padding-right: 50px;
+  width: 250px;
+  height: 100px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.intro-btn {
+  width: 1px;
+  height: 1px;
+  border-radius: 50%;
+  background-color: black;
+  outline-style: none;
+  border: none;
+}
+.intro-btn-label {
+  color: rgba(255, 255, 255, 0);
+}
+
+@keyframes show-btn {
+  from {
+    visibility: hidden;
+    opacity: 0;
+  }
+  to {
+    visibility: visible;
+    opacity: 1;
+    transform: scale(100, 100);
+  }
+}
+@keyframes show-label {
+  from {
+    visibility: hidden;
+    color: rgba(255, 255, 255, 0);
+  }
+  to {
+    visibility: visible;
+    color: rgba(255, 255, 255, 1);
+  }
+}
+@keyframes btn-fade {
+  from {
+    width: 100px;
+    height: 100px;
+    transform: translateX(50px);
+    border-radius: 50%;
+
+    opacity: 1;
+  }
+  to {
+    transform-origin: -50px center;
+    transform: translateX(50px) scale(0.1, 0.1);
+    opacity: 0;
+  }
+}
+@keyframes label-fade {
+  from {
+    color: rgba(255, 255, 255, 1);
+  }
+  to {
+    color: rgba(255, 255, 255, 0);
+  }
+}
+.btn-show-ani {
+  animation: show-btn 1s forwards;
+}
+.btn-fade-ani {
+  animation: btn-fade 1s forwards;
+}
+
+.label-show-ani {
+  animation: show-label 2s forwards;
+}
+.label-fade-ani {
+  animation: label-fade 1s linear forwards;
 }

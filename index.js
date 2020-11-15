@@ -1,25 +1,20 @@
 const canvas = document.querySelector("canvas");
 const ctx = canvas.getContext("2d");
-const textContainer = document.querySelector(".text-container"),
-  main = document.querySelector("main");
-const btn = document.createElement("input");
-btn.type = "button";
-main.appendChild(btn);
+const textContainer = document.querySelector(".text-container");
+const text = document.querySelector(".text");
+const btn = document.querySelector(".intro-btn");
+const btnLabel = document.querySelector(".intro-btn-label");
 
 const stageWidth = document.body.clientWidth,
   stageHeight = document.body.clientHeight;
 
-const btnX = stageWidth - 100;
-const btnY = stageHeight - 100;
 let btnR = 50; //버튼 원 반지름
 
-function drawBtn() {
-  //그리긴했는데 실제 btn이랑 상관없이 그려져버렸음 .......
-  ctx.beginPath();
-  ctx.arc(btnX, btnY, btnR, 0, 2 * Math.PI);
-  ctx.fillStyle = "black";
-  ctx.fill();
-  ctx.closePath();
+function drawBtnCon() {
+  let rect = btn.getBoundingClientRect();
+  const btnX = rect.x,
+    btnY = rect.y;
+  //버튼이랑 텍스트는 css로 그려서 애니메이션으로 제어할 거임
   ctx.beginPath();
   ctx.moveTo(btnX - 100, btnY);
   ctx.lineTo(btnX, btnY);
@@ -29,50 +24,29 @@ function drawBtn() {
   ctx.lineTo(btnX - 5, btnY - 5);
   ctx.lineTo(btnX - 5, btnY + 5);
   ctx.lineTo(btnX, btnY);
-  ctx.fillStyle = "white";
+  ctx.fillStyle = "rgba(255,255,255,0.7";
   ctx.fill();
-  ctx.font = "1em sans-serif";
-  ctx.fillText(`Passer l'intro`, btnX - 200, btnY + 5);
+  btnLabel.classList.add("label-show-ani");
+  btn.classList.add("btn-show-ani");
 }
 
 function btnFade() {
-  for (let i = 0; i < btnR; i++) {
-    //투명도 fade out 효과 다시보기
-    let transparency = 1;
-    transparency -= 0.2;
-    btnR -= 1;
-    ctx.clearRect(0, 0, stageWidth, stageHeight);
-    ctx.beginPath();
-    ctx.fillStyle = `rgba(0,0,0,${transparency})`;
-    ctx.arc(btnX, btnY, btnR, 0, 2 * Math.PI);
-    ctx.fill();
-    ctx.closePath();
-    ctx.beginPath();
-    ctx.moveTo(btnX - 100, btnY);
-    ctx.lineTo(btnX, btnY);
-    ctx.strokeStyle = `rgba(255, 255, 255, ${transparency})`;
-    ctx.lineWidth = 1;
-    ctx.stroke();
-    ctx.lineTo(btnX - 5, btnY - 5);
-    ctx.lineTo(btnX - 5, btnY + 5);
-    ctx.lineTo(btnX, btnY);
-    ctx.fillStyle = `rgba(255, 255, 255, ${transparency})`;
-    ctx.fill();
-    ctx.font = "1em sans-serif";
-    ctx.fillText(`Passer l'intro`, btnX - 200, btnY + 5);
-  }
+  btn.classList.remove("btn-show-ani");
+  btn.classList.add("btn-fade-ani");
+  btnLabel.classList.remove("label-show-ani");
+  btnLabel.classList.add("label-fade-ani");
+  //투명도, 스케일 css 처리
 }
 
-document.onanimationend = () => {
-  console.log("Animation ended");
-  setInterval(btnFade, 10);
+text.onanimationend = () => {
+  setInterval(btnFade, 1000);
 };
 
 function resizeHandler() {
   canvas.width = stageWidth * 2;
   canvas.height = stageHeight * 2;
   ctx.scale(2, 2);
-  drawBtn();
+  drawBtnCon();
 }
 
 function init() {
@@ -81,5 +55,3 @@ function init() {
 
 window.onload = () => resizeHandler();
 init();
-
-//window.addEventListener("animationend", removeCanvas);
