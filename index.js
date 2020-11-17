@@ -73,7 +73,14 @@ function bgAnimate() {
     let increment = 0;
     let cpVal = -50;
 
+    let n = 0; //for cancel animation
+
     function drawBezierCurve() {
+      n++;
+      if (n > 100) {
+        return;
+      }
+
       increment = increment + speed;
       cpVal += 2;
 
