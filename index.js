@@ -10,6 +10,10 @@ const stageWidth = document.body.clientWidth,
 
 let btnR = 50; //버튼 원 반지름
 
+const red = "rgb(139, 34, 34)";
+
+let timeId;
+
 // Bezier curve
 const startPointX = stageWidth;
 const startPointY = stageHeight;
@@ -22,11 +26,14 @@ const endPointY = stageHeight;
 let speed = 5;
 let increment = 0;
 
+//circle container
+const circleContainer = document.querySelector(".circle-container"),
+  circle = document.querySelector(".circle");
+
 function drawBtnCon() {
   let rect = btn.getBoundingClientRect();
   const btnX = rect.x,
     btnY = rect.y;
-  //리사이즈 이벤트 후 화살표 위치 이상함......일단 스킵
   ctx.beginPath();
   ctx.moveTo(btnX - 100, btnY);
   ctx.lineTo(btnX, btnY);
@@ -41,13 +48,11 @@ function drawBtnCon() {
   btnLabel.classList.add("label-show-ani");
   btn.classList.add("btn-show-ani");
 }
-
 function btnFade() {
   btn.classList.remove("btn-show-ani");
   btn.classList.add("btn-fade-ani");
   btnLabel.classList.remove("label-show-ani");
   btnLabel.classList.add("label-fade-ani");
-  //투명도, 스케일 css 처리
 }
 
 function resizeHandler() {
@@ -57,19 +62,64 @@ function resizeHandler() {
   drawBtnCon();
 }
 
+function bgAnimate() {
+  if (event.animationName === "label-fade") {
+    clearInterval(timeId);
+    const main = document.querySelector(".main");
+    main.style.backgroundColor = "transparent";
+    circleContainer.style.visibility = "visible";
+
+    let speed = 10;
+    let increment = 0;
+    let cpVal = -50;
+
+    function drawBezierCurve() {
+      increment = increment + speed;
+      cpVal += 2;
+
+      let currentCPYTop = stageHeight - increment;
+      if (cpVal > 20) {
+        speed = 12;
+      }
+      if (cpVal >= 10) {
+        ctx.clearRect(0, 0, stageWidth, stageHeight);
+        ctx.beginPath();
+        ctx.fillRect(0, 0, stageWidth, currentCPYTop);
+        ctx.fillStyle = " rgb(138, 17, 17)";
+        ctx.fill();
+        ctx.closePath();
+      } else {
+        ctx.clearRect(0, 0, stageWidth, stageHeight);
+        ctx.beginPath();
+        ctx.moveTo(0, 0);
+        ctx.lineTo(stageWidth, 0);
+        ctx.lineTo(stageWidth, stageHeight - increment);
+        ctx.bezierCurveTo(
+          stageWidth,
+          stageHeight + cpVal - increment,
+          0,
+          stageHeight + cpVal - increment,
+          0,
+          stageHeight - increment
+        );
+        ctx.fillStyle = " rgb(138, 17, 17)";
+        ctx.fill();
+        ctx.closePath();
+      }
+
+      timeId = requestAnimationFrame(drawBezierCurve);
+    }
+
+    drawBezierCurve();
+  }
+}
+
 function init() {
-  let timeId;
   window.addEventListener("resize", resizeHandler);
   text.onanimationend = () => {
     timeId = setInterval(btnFade, 1000);
   };
-  btnLabel.onanimationend = () => {
-    if (event.animationName === "label-fade") {
-      clearInterval(timeId);
-      ctx.fillStyle = "white";
-      ctx.fillRect(0, 0, stageWidth, stageHeight); //애니메이션이 끝나면 캔버스 리셋
-    }
-  };
+  btnLabel.addEventListener("animationend", bgAnimate);
 }
 
 window.onload = () => resizeHandler();
