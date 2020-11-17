@@ -10,11 +10,23 @@ const stageWidth = document.body.clientWidth,
 
 let btnR = 50; //버튼 원 반지름
 
+// Bezier curve
+const startPointX = stageWidth;
+const startPointY = stageHeight;
+let cp1x = stageWidth;
+let cp1y = stageHeight;
+let cp2x = 0;
+let cp2y = stageHeight;
+const endPointX = 0;
+const endPointY = stageHeight;
+let speed = 5;
+let increment = 0;
+
 function drawBtnCon() {
   let rect = btn.getBoundingClientRect();
   const btnX = rect.x,
     btnY = rect.y;
-  //버튼이랑 텍스트는 css로 그려서 애니메이션으로 제어할 거임
+  //리사이즈 이벤트 후 화살표 위치 이상함......일단 스킵
   ctx.beginPath();
   ctx.moveTo(btnX - 100, btnY);
   ctx.lineTo(btnX, btnY);
@@ -38,10 +50,6 @@ function btnFade() {
   //투명도, 스케일 css 처리
 }
 
-text.onanimationend = () => {
-  setInterval(btnFade, 1000);
-};
-
 function resizeHandler() {
   canvas.width = stageWidth * 2;
   canvas.height = stageHeight * 2;
@@ -50,7 +58,18 @@ function resizeHandler() {
 }
 
 function init() {
+  let timeId;
   window.addEventListener("resize", resizeHandler);
+  text.onanimationend = () => {
+    timeId = setInterval(btnFade, 1000);
+  };
+  btnLabel.onanimationend = () => {
+    if (event.animationName === "label-fade") {
+      clearInterval(timeId);
+      ctx.fillStyle = "white";
+      ctx.fillRect(0, 0, stageWidth, stageHeight); //애니메이션이 끝나면 캔버스 리셋
+    }
+  };
 }
 
 window.onload = () => resizeHandler();

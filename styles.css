@@ -160,7 +160,7 @@ canvas {
 }
 
 .label-show-ani {
-  animation: show-label 2s forwards;
+  animation: show-label 1s forwards;
 }
 .label-fade-ani {
   animation: label-fade 1s linear forwards;
